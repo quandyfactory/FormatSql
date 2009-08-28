@@ -2,7 +2,7 @@
 formatsql - lets you format SQL using the format_sql() function.
 """
 
-__version__ = '0.2'
+__version__ = '0.3'
 __author__ = 'Ryan McGreal ryan@quandyfactory.com'
 __copyright__ = 'Copyright 2009 by Ryan McGreal. Licenced under GPL version 2. http://www.gnu.org/licenses/gpl-2.0.html'
 
@@ -55,6 +55,15 @@ def prepare_inline_comments(instring):
         outlist.append(line)
     return ' '.join(outlist)
     
+def replace_word_match(word, match, replace):
+    """
+    Takes a word, checks to see if it matches a pattern, and replaces it if so
+    """
+    if word == match:
+        return replace
+    else:
+        return word
+    
     
 def set_linebreaks_and_tabs(instring):
     """
@@ -87,39 +96,39 @@ def set_linebreaks_and_tabs(instring):
             ignoreflag = False
 
         if ignoreflag == False:
-            word = word.replace('CREATE', ' \n\nCREATE\t\t\t')
-            word = word.replace('ALTER', ' \n\nALTER\n')
-            word = word.replace('PROCEDURE', '\nPROCEDURE\t\t')
-            word = word.replace('FUNCTION', '\nFUNCTION\t\t')
-            word = word.replace('EXEC', ' \n\nEXEC\t\t\t')
-            word = word.replace('SELECT', '\n\nSELECT\t\t\t')
-            word = word.replace('UPDATE', '\n\nUPDATE\t\t\t')
-            word = word.replace('INSERT', '\n\nINSERT\t\t\t')
-            word = word.replace('DELETE', '\n\nDELETE\t\t\t')
-            word = word.replace('INTO', '\nINTO\t\t\t')
-            word = word.replace('SET', '\nSET\t\t\t')
-            word = word.replace('INNER&nbsp;JOIN', '\nINNER&nbsp;JOIN\t\t')
-            word = word.replace('LEFT&nbsp;JOIN', '\nLEFT&nbsp;JOIN\t\t')
-            word = word.replace('RIGHT&nbsp;JOIN', '\nRIGHT&nbsp;JOIN\t\t')
-            word = word.replace('WHERE', '\nWHERE\t\t\t')
-            word = word.replace('HAVING', '\nHAVING\t\t\t')
-            word = word.replace('GROUP&nbsp;BY', '\nGROUP&nbsp;BY\t\t')
-            word = word.replace('ORDER&nbsp;BY', '\nORDER&nbsp;BY\t\t')
-            word = word.replace('FROM', '\nFROM\t\t\t')
-            word = word.replace('ON', 'ON \n\t\t\t\t')
-            word = word.replace('AND', '\n\t\t\t&nbsp;AND')
-            word = word.replace('CASE', '\n\t\t\t&nbsp;CASE')
-            word = word.replace('BEGIN', '\n\t\t\t&nbsp;BEGIN')
-            word = word.replace('WHEN', '\n\t\t\t\t&nbsp;WHEN')
-            word = word.replace('THEN', '\n\t\t\t\t&nbsp;THEN')
-            word = word.replace('ELSE', '\n\t\t\t\t&nbsp;ELSE')
-            word = word.replace('END', '\n\t\t\t&nbsp;END')
-            word = word.replace('DROP&nbsp;TABLE', '\n\nDROP&nbsp;TABLE\t\t')
-            word = word.replace('SET&nbsp;ANSI_NULLS&nbsp;ON', '\nSET&nbsp;ANSI_NULLS&nbsp;ON')
-            word = word.replace('SET&nbsp;QUOTED_IDENTIFIER&nbsp;ON', '\nSET&nbsp;QUOTED_IDENTIFIER&nbsp;ON')
-            word = word.replace('GO ', '\nGO\n')
-            word = word.replace('\tGO ', '\t\nGO\n')
-            word = word.replace('__COMMA__SPACE__', '\n\t\t\t&nbsp;')
+            word = replace_word_match(word, 'CREATE', ' \n\nCREATE\t\t\t')
+            word = replace_word_match(word, 'ALTER', ' \n\nALTER\n')
+            word = replace_word_match(word, 'PROCEDURE', '\nPROCEDURE\t\t')
+            word = replace_word_match(word, 'FUNCTION', '\nFUNCTION\t\t')
+            word = replace_word_match(word, 'EXEC', ' \n\nEXEC\t\t\t')
+            word = replace_word_match(word, 'SELECT', '\n\nSELECT\t\t\t')
+            word = replace_word_match(word, 'UPDATE', '\n\nUPDATE\t\t\t')
+            word = replace_word_match(word, 'INSERT', '\n\nINSERT\t\t\t')
+            word = replace_word_match(word, 'DELETE', '\n\nDELETE\t\t\t')
+            word = replace_word_match(word, 'INTO', '\nINTO\t\t\t')
+            word = replace_word_match(word, 'SET', '\nSET\t\t\t')
+            word = replace_word_match(word, 'INNER&nbsp;JOIN', '\nINNER&nbsp;JOIN\t\t')
+            word = replace_word_match(word, 'LEFT&nbsp;JOIN', '\nLEFT&nbsp;JOIN\t\t')
+            word = replace_word_match(word, 'RIGHT&nbsp;JOIN', '\nRIGHT&nbsp;JOIN\t\t')
+            word = replace_word_match(word, 'WHERE', '\nWHERE\t\t\t')
+            word = replace_word_match(word, 'HAVING', '\nHAVING\t\t\t')
+            word = replace_word_match(word, 'GROUP&nbsp;BY', '\nGROUP&nbsp;BY\t\t')
+            word = replace_word_match(word, 'ORDER&nbsp;BY', '\nORDER&nbsp;BY\t\t')
+            word = replace_word_match(word, 'FROM', '\nFROM\t\t\t')
+            word = replace_word_match(word, 'ON', 'ON \n\t\t\t\t')
+            word = replace_word_match(word, 'AND', '\n\t\t\t\tAND')
+            word = replace_word_match(word, 'CASE', '\n\t\t\tCASE')
+            word = replace_word_match(word, 'BEGIN', '\n\t\t\tBEGIN')
+            word = replace_word_match(word, 'WHEN', '\n\t\t\t\tWHEN')
+            word = replace_word_match(word, 'THEN', '\n\t\t\t\tTHEN')
+            word = replace_word_match(word, 'ELSE', '\n\t\t\t\tELSE')
+            word = replace_word_match(word, 'END', '\n\t\t\tEND')
+            word = replace_word_match(word, 'DROP&nbsp;TABLE', '\n\nDROP&nbsp;TABLE\t\t')
+            word = replace_word_match(word, 'SET&nbsp;ANSI_NULLS&nbsp;ON', '\nSET&nbsp;ANSI_NULLS&nbsp;ON')
+            word = replace_word_match(word, 'SET&nbsp;QUOTED_IDENTIFIER&nbsp;ON', '\nSET&nbsp;QUOTED_IDENTIFIER&nbsp;ON')
+            word = replace_word_match(word, 'GO ', '\nGO\n')
+            word = replace_word_match(word, '\tGO ', '\t\nGO\n')
+            word = word.replace('__COMMA__SPACE__', ', \n\t\t\t\t')
 
         MyOutWords.append(word)
 
@@ -127,6 +136,10 @@ def set_linebreaks_and_tabs(instring):
     
     outstring = outstring.replace('__COMMA__SPACE__', ', ')
     outstring = outstring.replace('&nbsp;', ' ')
+    
+    #fix leading spaces after tabs
+    while '\t ' in outstring:
+        outstring = outstring.replace('\t ', '\t')
     
     return outstring
     
@@ -162,6 +175,15 @@ def convert_keywords_to_uppercase(instring):
     instring = ' ' + ' '.join(MyOutWords) + ' '
     return instring
     
+def fix_block_comments(instring):
+    """
+    Moves bock comments into new lines (one line for comment opener, one line for comment text, one line for comment closer)
+    """
+    instring = instring.replace('/* ', '/*')
+    instring = instring.replace('/*', '\n/*\n')
+    instring = instring.replace('*/ ', '\n*/\n')
+    return instring
+    
 def format_sql(instring):
     """
     Takes an unformatted string of SQL and returns a formatted string:
@@ -187,10 +209,9 @@ def format_sql(instring):
     instring = set_linebreaks_and_tabs(instring)
     
     # NEW 2009-08-24 - format comments
-    instring = instring.replace('/* ', '/*')
-    instring = instring.replace('/*', '\n/*\n')
-    instring = instring.replace('*/ ', '\n*/\n')
+    instring = fix_block_comments(instring)
     
+    # fix inline comment terminator
     instring = instring.replace('__TERMINATE__INLINE__COMMENT__', '\n')
     
     #eliminate multiple spaces

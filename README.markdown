@@ -20,12 +20,21 @@ Released under the GNU General Public Licence, Version 2:
 
 ## This Version
 
-* Version: 0.2
+* Version: 0.3
 
-* Release Date: 2009-08-26
+* Release Date: 2009-08-27
 
 ## Revision History
 
+### Version: 0.3
+
+* Release Date: 2009-08-27
+
+* Changes:
+
+    * Fixed bug that split CONVERT into CON\n\t\t\tVERT by adding replace_word_match function to replace on exact word
+    * Removed stray space after the last tab and before the indented text
+    
 ### Version: 0.2
 
 * Release Date: 2009-08-26
@@ -34,6 +43,7 @@ Released under the GNU General Public Licence, Version 2:
 
     * Added support for inline and block comments
     * Split more sql format operations into individual functions (prepare_inline_comments, set_linebreaks_and_tabs, convert_keywords_to_uppercase)
+    
     
 ### Version: 0.1
 
@@ -48,6 +58,10 @@ Released under the GNU General Public Licence, Version 2:
 * Python 2.5 or newer (not Python 3)
 
 ## Things I Wish FormatSql Had
+
+### Real exact word replace function
+
+It's stupid that I use replace_word_match when I should just check each word against a dictionary key and return the value if they match. I promise I'll fix this for version 0.4.
 
 ### Customization
 
