@@ -20,11 +20,19 @@ Released under the GNU General Public Licence, Version 2:
 
 ## This Version
 
-* Version: 0.4
+* Version: 0.41
 
 * Release Date: 2009-08-27
 
 ## Revision History
+
+### Version: 0.41
+
+* Release Date: 2009-08-27
+
+* Changes:
+
+    * Added "How to Use" section to README file, including a simple sample code.
 
 ### Version: 0.4
 
@@ -66,11 +74,28 @@ Released under the GNU General Public Licence, Version 2:
 
 * Python 2.5 or newer (not Python 3)
 
+## How to Use
+
+It's really simple. 
+
+1. Save the formatsql.py file someplace where the python PATH will find it.
+2. Next, `import formatsql` into your project.
+3. Run the formatsql.format_sql(sql) function to get your formatted sql.
+
+### Example code
+
+    """
+    This code formats sql using the formatsql.py module.
+    """
+    
+    import formatsql
+    sql = "select convert(varchar(10),a.col1,121) as thedate, a.col2 as whatever, b.col3 as fullname, c.col4 as title -- inline comment\nfrom atable a inner join btable b on a.colx = b.colx -- another inline comment\ninner join ctable c on a.coly = c.coly /* this is a block quote */ where a.id < 100 order by a.col1"
+    formatted_sql = formatsql.format_sql(sql)
+    print formatted_sql
+
+Seriously, that's it.
+
 ## Things I Wish FormatSql Had
-
-### Real exact word replace function
-
-It's stupid that I use replace_word_match when I should just check each word against a dictionary key and return the value if they match. I promise I'll fix this for version 0.4.
 
 ### Customization
 
