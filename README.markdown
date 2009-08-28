@@ -20,12 +20,20 @@ Released under the GNU General Public Licence, Version 2:
 
 ## This Version
 
-* Version: 0.3
+* Version: 0.4
 
 * Release Date: 2009-08-27
 
 ## Revision History
 
+### Version: 0.4
+
+* Release Date: 2009-08-27
+
+* Changes:
+
+    * Replaced way lame replace_word_match function with a lookup against a hashtable
+    
 ### Version: 0.3
 
 * Release Date: 2009-08-27
@@ -34,6 +42,7 @@ Released under the GNU General Public Licence, Version 2:
 
     * Fixed bug that split CONVERT into CON\n\t\t\tVERT by adding replace_word_match function to replace on exact word
     * Removed stray space after the last tab and before the indented text
+    
     
 ### Version: 0.2
 

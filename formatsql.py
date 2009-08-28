@@ -1,15 +1,15 @@
 """
-formatsql - lets you format SQL using the format_sql() function.
+formatsql - lets you format SQL using the format_sql(, function.
 """
 
-__version__ = '0.3'
+__version__ = '0.4'
 __author__ = 'Ryan McGreal ryan@quandyfactory.com'
 __copyright__ = 'Copyright 2009 by Ryan McGreal. Licenced under GPL version 2. http://www.gnu.org/licenses/gpl-2.0.html'
 
 
 def replace_whitespace_with_space(char):
     """
-    Takes a character and returns either the character (if it's not a whitespace character) or a single space
+    Takes a character and returns either the character (if it's not a whitespace character, or a single space
     """
     whitespace = '\t\n\x0b\x0c\r '
     if char in whitespace:
@@ -43,9 +43,9 @@ def prepare_inline_comments(instring):
     """
     Fixes inline comments starting with '--'
     """
-    instring = instring.replace('--','\n--')
-    instring = instring.replace('-- ','--')
-    instring = instring.replace('--','-- ')
+    instring = instring.replace('--', '\n--')
+    instring = instring.replace('-- ', '--')
+    instring = instring.replace('--', '-- ')
     lines = instring.split('\n')
     outlist = []
     for line in lines:
@@ -55,14 +55,6 @@ def prepare_inline_comments(instring):
         outlist.append(line)
     return ' '.join(outlist)
     
-def replace_word_match(word, match, replace):
-    """
-    Takes a word, checks to see if it matches a pattern, and replaces it if so
-    """
-    if word == match:
-        return replace
-    else:
-        return word
     
     
 def set_linebreaks_and_tabs(instring):
@@ -88,7 +80,43 @@ def set_linebreaks_and_tabs(instring):
     MyInWords = instring.split(' ')
     MyOutWords = []
 
-    # Step 4: Walk through list of words and do conversions inside for words not inside comments
+
+    # Step 4: Hash table of keywords and their replacements
+    tab_space_dict = {
+            'ALTER': ' \n\nALTER\n',
+            'PROCEDURE': '\nPROCEDURE\t\t',
+            'FUNCTION': '\nFUNCTION\t\t',
+            'EXEC': ' \n\nEXEC\t\t\t',
+            'SELECT': '\n\nSELECT\t\t\t',
+            'UPDATE': '\n\nUPDATE\t\t\t',
+            'INSERT': '\n\nINSERT\t\t\t',
+            'DELETE': '\n\nDELETE\t\t\t',
+            'INTO': '\nINTO\t\t\t',
+            'SET': '\nSET\t\t\t',
+            'INNER&nbsp;JOIN': '\nINNER&nbsp;JOIN\t\t',
+            'LEFT&nbsp;JOIN': '\nLEFT&nbsp;JOIN\t\t',
+            'RIGHT&nbsp;JOIN': '\nRIGHT&nbsp;JOIN\t\t',
+            'WHERE': '\nWHERE\t\t\t',
+            'HAVING': '\nHAVING\t\t\t',
+            'GROUP&nbsp;BY': '\nGROUP&nbsp;BY\t\t',
+            'ORDER&nbsp;BY': '\nORDER&nbsp;BY\t\t',
+            'FROM': '\nFROM\t\t\t',
+            'ON': 'ON \n\t\t\t\t',
+            'AND': '\n\t\t\t\tAND',
+            'CASE': '\n\t\t\tCASE',
+            'BEGIN': '\n\t\t\tBEGIN',
+            'WHEN': '\n\t\t\t\tWHEN',
+            'THEN': '\n\t\t\t\tTHEN',
+            'ELSE': '\n\t\t\t\tELSE',
+            'END': '\n\t\t\tEND',
+            'DROP&nbsp;TABLE': '\n\nDROP&nbsp;TABLE\t\t',
+            'SET&nbsp;ANSI_NULLS&nbsp;ON': '\nSET&nbsp;ANSI_NULLS&nbsp;ON',
+            'SET&nbsp;QUOTED_IDENTIFIER&nbsp;ON': '\nSET&nbsp;QUOTED_IDENTIFIER&nbsp;ON',
+            'GO ': '\nGO\n',
+            '\tGO ': '\t\nGO\n',    
+    }
+
+    # Step 5: Walk the list of words and do conversions for words not inside comments
     for word in MyInWords:
         if word == "/*" or word == '--': 
             ignoreflag = True
@@ -96,38 +124,9 @@ def set_linebreaks_and_tabs(instring):
             ignoreflag = False
 
         if ignoreflag == False:
-            word = replace_word_match(word, 'CREATE', ' \n\nCREATE\t\t\t')
-            word = replace_word_match(word, 'ALTER', ' \n\nALTER\n')
-            word = replace_word_match(word, 'PROCEDURE', '\nPROCEDURE\t\t')
-            word = replace_word_match(word, 'FUNCTION', '\nFUNCTION\t\t')
-            word = replace_word_match(word, 'EXEC', ' \n\nEXEC\t\t\t')
-            word = replace_word_match(word, 'SELECT', '\n\nSELECT\t\t\t')
-            word = replace_word_match(word, 'UPDATE', '\n\nUPDATE\t\t\t')
-            word = replace_word_match(word, 'INSERT', '\n\nINSERT\t\t\t')
-            word = replace_word_match(word, 'DELETE', '\n\nDELETE\t\t\t')
-            word = replace_word_match(word, 'INTO', '\nINTO\t\t\t')
-            word = replace_word_match(word, 'SET', '\nSET\t\t\t')
-            word = replace_word_match(word, 'INNER&nbsp;JOIN', '\nINNER&nbsp;JOIN\t\t')
-            word = replace_word_match(word, 'LEFT&nbsp;JOIN', '\nLEFT&nbsp;JOIN\t\t')
-            word = replace_word_match(word, 'RIGHT&nbsp;JOIN', '\nRIGHT&nbsp;JOIN\t\t')
-            word = replace_word_match(word, 'WHERE', '\nWHERE\t\t\t')
-            word = replace_word_match(word, 'HAVING', '\nHAVING\t\t\t')
-            word = replace_word_match(word, 'GROUP&nbsp;BY', '\nGROUP&nbsp;BY\t\t')
-            word = replace_word_match(word, 'ORDER&nbsp;BY', '\nORDER&nbsp;BY\t\t')
-            word = replace_word_match(word, 'FROM', '\nFROM\t\t\t')
-            word = replace_word_match(word, 'ON', 'ON \n\t\t\t\t')
-            word = replace_word_match(word, 'AND', '\n\t\t\t\tAND')
-            word = replace_word_match(word, 'CASE', '\n\t\t\tCASE')
-            word = replace_word_match(word, 'BEGIN', '\n\t\t\tBEGIN')
-            word = replace_word_match(word, 'WHEN', '\n\t\t\t\tWHEN')
-            word = replace_word_match(word, 'THEN', '\n\t\t\t\tTHEN')
-            word = replace_word_match(word, 'ELSE', '\n\t\t\t\tELSE')
-            word = replace_word_match(word, 'END', '\n\t\t\tEND')
-            word = replace_word_match(word, 'DROP&nbsp;TABLE', '\n\nDROP&nbsp;TABLE\t\t')
-            word = replace_word_match(word, 'SET&nbsp;ANSI_NULLS&nbsp;ON', '\nSET&nbsp;ANSI_NULLS&nbsp;ON')
-            word = replace_word_match(word, 'SET&nbsp;QUOTED_IDENTIFIER&nbsp;ON', '\nSET&nbsp;QUOTED_IDENTIFIER&nbsp;ON')
-            word = replace_word_match(word, 'GO ', '\nGO\n')
-            word = replace_word_match(word, '\tGO ', '\t\nGO\n')
+            while word in tab_space_dict.keys():
+                word = tab_space_dict[word]
+            
             word = word.replace('__COMMA__SPACE__', ', \n\t\t\t\t')
 
         MyOutWords.append(word)
@@ -177,7 +176,7 @@ def convert_keywords_to_uppercase(instring):
     
 def fix_block_comments(instring):
     """
-    Moves bock comments into new lines (one line for comment opener, one line for comment text, one line for comment closer)
+    Moves bock comments into new lines (one line for comment opener, one line for comment text, one line for comment closer,
     """
     instring = instring.replace('/* ', '/*')
     instring = instring.replace('/*', '\n/*\n')
