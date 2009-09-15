@@ -2,10 +2,9 @@
 formatsql - lets you format SQL using the format_sql(, function.
 """
 
-__version__ = '0.4'
+__version__ = '0.5'
 __author__ = 'Ryan McGreal ryan@quandyfactory.com'
 __copyright__ = 'Copyright 2009 by Ryan McGreal. Licenced under GPL version 2. http://www.gnu.org/licenses/gpl-2.0.html'
-
 
 def replace_whitespace_with_space(char):
     """
@@ -55,8 +54,6 @@ def prepare_inline_comments(instring):
         outlist.append(line)
     return ' '.join(outlist)
     
-    
-    
 def set_linebreaks_and_tabs(instring):
     """
     Sets line breaks and tabs around SQL reserved words
@@ -73,47 +70,48 @@ def set_linebreaks_and_tabs(instring):
     instring = instring.replace('DROP TABLE', 'DROP&nbsp;TABLE')
     instring = instring.replace('SET ANSI_NULLS ON', 'SET&nbsp;ANSI_NULLS&nbsp;ON')
     instring = instring.replace('SET QUOTED_IDENTIFIER ON', 'SET&nbsp;QUOTED_IDENTIFIER&nbsp;ON')
-    
     instring = instring.replace(', ', '__COMMA__SPACE__')
     
     # Step 3: Split string into a list of words
     MyInWords = instring.split(' ')
     MyOutWords = []
 
-
     # Step 4: Hash table of keywords and their replacements
     tab_space_dict = {
             'ALTER': ' \n\nALTER\n',
-            'PROCEDURE': '\nPROCEDURE\t\t',
-            'FUNCTION': '\nFUNCTION\t\t',
-            'EXEC': ' \n\nEXEC\t\t\t',
-            'SELECT': '\n\nSELECT\t\t\t',
-            'UPDATE': '\n\nUPDATE\t\t\t',
-            'INSERT': '\n\nINSERT\t\t\t',
-            'DELETE': '\n\nDELETE\t\t\t',
-            'INTO': '\nINTO\t\t\t',
-            'SET': '\nSET\t\t\t',
+            'PROCEDURE': '\nPROCEDURE\t',
+            'FUNCTION': '\nFUNCTION\t',
+            'EXEC': ' \n\nEXEC\t\t',
+            'SELECT': '\n\nSELECT\t\t',
+            'UPDATE': '\n\nUPDATE\t\t',
+            'INSERT': '\n\nINSERT\t\t',
+            'DELETE': '\n\nDELETE\t\t',
+            'INTO': '\nINTO\t\t',
+            'SET': '\nSET\t\t',
             'INNER&nbsp;JOIN': '\nINNER&nbsp;JOIN\t\t',
             'LEFT&nbsp;JOIN': '\nLEFT&nbsp;JOIN\t\t',
             'RIGHT&nbsp;JOIN': '\nRIGHT&nbsp;JOIN\t\t',
-            'WHERE': '\nWHERE\t\t\t',
-            'HAVING': '\nHAVING\t\t\t',
+            'WHERE': '\nWHERE\t\t',
+            'HAVING': '\nHAVING\t\t',
             'GROUP&nbsp;BY': '\nGROUP&nbsp;BY\t\t',
             'ORDER&nbsp;BY': '\nORDER&nbsp;BY\t\t',
-            'FROM': '\nFROM\t\t\t',
-            'ON': 'ON \n\t\t\t\t',
-            'AND': '\n\t\t\t\tAND',
-            'CASE': '\n\t\t\tCASE',
-            'BEGIN': '\n\t\t\tBEGIN',
-            'WHEN': '\n\t\t\t\tWHEN',
-            'THEN': '\n\t\t\t\tTHEN',
-            'ELSE': '\n\t\t\t\tELSE',
-            'END': '\n\t\t\tEND',
+            'FROM': '\nFROM\t\t',
+            'ON': 'ON \n\t\t',
+            'AND': '\n\t\tAND',
+            'CASE': '\n\t\tCASE',
+            'BEGIN': '\n\t\tBEGIN',
+            'WHEN': '\n\t\t\tWHEN',
+            'THEN': '\n\t\t\tTHEN',
+            'ELSE': '\n\t\t\tELSE',
+            'END': '\n\t\tEND',
             'DROP&nbsp;TABLE': '\n\nDROP&nbsp;TABLE\t\t',
             'SET&nbsp;ANSI_NULLS&nbsp;ON': '\nSET&nbsp;ANSI_NULLS&nbsp;ON',
             'SET&nbsp;QUOTED_IDENTIFIER&nbsp;ON': '\nSET&nbsp;QUOTED_IDENTIFIER&nbsp;ON',
             'GO ': '\nGO\n',
-            '\tGO ': '\t\nGO\n',    
+            '\tGO ': '\t\nGO\n',  
+            'VALUES': '\nVALUES\t\t',
+            '(': '\n\t\t(\n\t\t',
+            ')': '\n\t\t)\n\t\t',
     }
 
     # Step 5: Walk the list of words and do conversions for words not inside comments
@@ -127,7 +125,7 @@ def set_linebreaks_and_tabs(instring):
             while word in tab_space_dict.keys():
                 word = tab_space_dict[word]
             
-            word = word.replace('__COMMA__SPACE__', ', \n\t\t\t\t')
+            word = word.replace('__COMMA__SPACE__', ', \n\t\t')
 
         MyOutWords.append(word)
 
@@ -141,7 +139,7 @@ def set_linebreaks_and_tabs(instring):
         outstring = outstring.replace('\t ', '\t')
     
     return outstring
-    
+
 def convert_keywords_to_uppercase(instring):
     """
     Converts any SQL special keywords to uppercase
@@ -173,15 +171,67 @@ def convert_keywords_to_uppercase(instring):
             
     instring = ' ' + ' '.join(MyOutWords) + ' '
     return instring
-    
+
 def fix_block_comments(instring):
     """
-    Moves bock comments into new lines (one line for comment opener, one line for comment text, one line for comment closer,
+    Moves bock comments into new lines (one line for comment opener, one line for comment text,
+    one line for comment closer).
     """
     instring = instring.replace('/* ', '/*')
     instring = instring.replace('/*', '\n/*\n')
     instring = instring.replace('*/ ', '\n*/\n')
     return instring
+
+def fix_tab_spaces_for_keywords(instring, spaces=8):
+    """
+    After the convert_tabs_to_spaces function converts tabs to spaces, this function checks the
+    First word in each line and adds enough spaces to bump it up to the total number of spaces
+    per tab (default is 8).
+    """
+    lines = instring.split('\n')
+    outlist = []
+    comment_flag = False
+    for line in lines:
+        if line[:2] == '/*' or line[:] == '--': 
+            comment_flag = True
+        if line[:2] == '*/':
+            comment_flag = False
+        
+        if comment_flag == False:
+            hit_space = False
+            chars = 0
+            for char in line:
+                chars +=1
+                if char == ' ':
+                    hit_space = True
+                    break
+                if hit_space == True:
+                    break
+            if chars < spaces:
+                diff = spaces - chars
+                outlist.append(line[:chars] + ' '*diff + line[chars:])
+            else:
+                outlist.append(line)
+        else:
+            outlist.append(line)
+            
+    outstring = '\n'.join(outlist)
+    # fix ORDER BY and GROUP BY
+    outstring = outstring.replace('ORDER   BY ', 'ORDER BY')
+    outstring = outstring.replace('GROUP   BY ', 'GROUP BY')
+    outstring = outstring.replace('INNER   JOIN   ', 'INNER JOIN')
+    outstring = outstring.replace('DROP    TABLE   ', 'DROP TABLE')
+    outstring = outstring.replace('LEFT    JOIN  ', 'LEFT JOIN')
+    outstring = outstring.replace('RIGHT   JOIN   ', 'RIGHT JOIN')
+    return outstring
+    
+def convert_tabs_to_spaces(instring, spaces=8):
+    """
+    Converts tab characters in a query into spaces. Default is 8 spaces per tab.
+    """
+    outstring = instring.replace('\t',' '*spaces)
+    outstring = fix_tab_spaces_for_keywords(outstring)
+    return outstring
     
 def format_sql(instring):
     """
@@ -218,5 +268,8 @@ def format_sql(instring):
     
     # eliminate multiple blank lines
     instring = remove_multiple_blank_lines(instring)
+    
+    # converts tabs to spaces - default is 8
+    instring = convert_tabs_to_spaces(instring)
     
     return instring.strip()
